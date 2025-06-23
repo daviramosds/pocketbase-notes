@@ -9,6 +9,7 @@ interface IRegisterFormInputs {
   email: string;
   password: string;
   passwordConfirm: string;
+  avatar: FileList; 
 }
 
 function Register() {
@@ -25,8 +26,21 @@ function Register() {
 
   const onSubmit = async (data: IRegisterFormInputs) => {
     const pb = new PocketBase('http://127.0.0.1:8090');
+
     try {
-      await pb.collection('users').create(data);
+      const user = await pb.collection('users').create({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        passwordConfirm: data.passwordConfirm,
+      });
+
+      if (data.avatar?.[0]) {
+        const formData = new FormData();
+        formData.append('avatar', data.avatar[0]);
+
+        await pb.collection('users').update(user.id, formData);
+      }
 
       toast.success('🎉 Registration successful! Redirecting to login...', {
         position: 'top-center',
@@ -39,8 +53,8 @@ function Register() {
       });
 
       navigate('/login');
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      console.error('PocketBase error:', error);
       toast.error('🚫 Failed to register. Try again later.', {
         position: 'top-center',
         autoClose: 4000,
@@ -53,8 +67,9 @@ function Register() {
     }
   };
 
+
   const onError = (errorObject: FieldErrors<IRegisterFormInputs>) => {
-    const fieldOrder: Array<keyof IRegisterFormInputs> = ['name', 'email', 'password', 'passwordConfirm'];
+    const fieldOrder: Array<keyof IRegisterFormInputs> = ['name', 'email', 'password', 'passwordConfirm', 'avatar'];
 
     for (const field of fieldOrder) {
       if (errorObject[field]) {
@@ -160,6 +175,24 @@ function Register() {
               required: 'Confirm Password is required.',
               validate: (value) => value === password || 'Passwords do not match.',
             })}
+          />
+        </div>
+
+        <div className="w-full">
+          <label htmlFor="avatar" className="block text-gray-700 text-sm font-bold mb-2">
+            Avatar (Optional)
+          </label>
+          <input
+            className={`
+              block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 p-2
+              ${errors.avatar ? 'border-red-500 focus:border-red-500' : 'focus:border-blue-500'}
+              focus:ring-2 focus:ring-blue-200
+            `}
+            id="avatar"
+            type="file"
+            accept="image/*" // Restrict to image files
+            multiple={false}
+            {...register('avatar')}
           />
         </div>
 

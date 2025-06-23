@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
 function Home() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
