@@ -1,7 +1,8 @@
 import { useForm, type FieldErrors } from 'react-hook-form';
-import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TextInput from '../components/TextInput';
 import { pb } from '../utils/pocketbase';
 
 interface IRegisterFormInputs {
@@ -108,73 +109,66 @@ function Register() {
           </a>
         </h3>
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="text"
-            id="name"
-            placeholder="Name"
-            {...register('name', {
-              required: 'Name is required.',
-              minLength: { value: 6, message: 'Name must be at least 6 characters.' },
-            })}
-          />
-        </div>
+        <TextInput
+          label="Name"
+          name="name"
+          type="text"
+          placeholder="Name"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Name is required.',
+            minLength: {
+              value: 3,
+              message: 'Name must be at least 3 characters.',
+            },
+          }}
+        />
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="email"
-            id="email"
-            placeholder="Email"
-            {...register('email', {
-              required: 'Email is required.',
-              pattern: { value: /^\S+@\S+\.\S+$/, message: 'Please enter a valid email address.' },
-            })}
-          />
-        </div>
+        <TextInput
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Email"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Email is required.',
+            pattern: {
+              value: /^\S+@\S+\.\S+$/,
+              message: 'Please enter a valid email address.',
+            },
+          }}
+        />
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="password"
-            id="password"
-            placeholder="Password"
-            {...register('password', {
-              required: 'Password is required.',
-              minLength: { value: 6, message: 'Password must be at least 6 characters.' },
-            })}
-          />
-        </div>
+        <TextInput
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Password is required.',
+            minLength: {
+              value: 3,
+              message: 'Password must be at least 3 characters.',
+            },
+          }}
+        />
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.passwordConfirm ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="password"
-            id="passwordConfirm"
-            placeholder="Confirm Password"
-            {...register('passwordConfirm', {
-              required: 'Confirm Password is required.',
-              validate: (value) => value === password || 'Passwords do not match.',
-            })}
-          />
-        </div>
+        <TextInput
+          label="Confirm password"
+          name="passwordConfirm"
+          type="password"
+          placeholder="Password"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Confirm Password is required.',
+            validate: (value: string) => value === password || 'Passwords do not match.',
+          }}
+        />
 
         <div className="w-full">
           <label htmlFor="avatar" className="block text-gray-700 text-sm font-bold mb-2">

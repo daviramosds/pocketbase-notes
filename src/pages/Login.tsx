@@ -1,8 +1,10 @@
+// src/components/Login.tsx
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { pb } from '../utils/pocketbase';
+import TextInput from '../components/TextInput'; 
 
 interface ILoginFormInputs {
   email: string;
@@ -19,7 +21,6 @@ function Login() {
   } = useForm<ILoginFormInputs>();
 
   const onSubmit = async (data: ILoginFormInputs) => {
-
     try {
       await pb.collection('users').authWithPassword(data.email, data.password);
 
@@ -34,7 +35,6 @@ function Login() {
       });
 
       navigate('/');
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('🚫 Invalid credentials. Please try again.', {
@@ -91,45 +91,37 @@ function Login() {
           </Link>
         </h3>
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="email"
-            id="email"
-            placeholder="Email"
-            {...register('email', {
-              required: 'Email is required.',
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: 'Please enter a valid email address.',
-              },
-            })}
-          />
-        </div>
+        <TextInput
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="Email"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Email is required.',
+            pattern: {
+              value: /^\S+@\S+\.\S+$/,
+              message: 'Please enter a valid email address.',
+            },
+          }}
+        />
 
-        <div className="w-full">
-          <input
-            className={`
-              bg-gray-100 outline-none p-3 text-base border-b-2 rounded-md w-full transition-colors duration-200
-              ${errors.password ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'}
-              focus:ring-2 focus:ring-blue-200
-            `}
-            type="password"
-            id="password"
-            placeholder="Password"
-            {...register('password', {
-              required: 'Password is required.',
-              minLength: {
-                value: 6,
-                message: 'Password must be at least 6 characters.',
-              },
-            })}
-          />
-        </div>
+        <TextInput
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          register={register}
+          errors={errors}
+          validationRules={{
+            required: 'Password is required.',
+            minLength: {
+              value: 3,
+              message: 'Password must be at least 3 characters.',
+            },
+          }}
+        />
 
         <button
           type="submit"
