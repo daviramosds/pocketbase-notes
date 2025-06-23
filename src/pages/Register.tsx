@@ -1,15 +1,15 @@
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
-import PocketBase from 'pocketbase';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { pb } from '../utils/pocketbase';
 
 interface IRegisterFormInputs {
   name: string;
   email: string;
   password: string;
   passwordConfirm: string;
-  avatar: FileList; 
+  avatar: FileList;
 }
 
 function Register() {
@@ -25,8 +25,6 @@ function Register() {
   const password = watch('password', '');
 
   const onSubmit = async (data: IRegisterFormInputs) => {
-    const pb = new PocketBase('http://127.0.0.1:8090');
-
     try {
       const user = await pb.collection('users').create({
         name: data.name,

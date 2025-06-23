@@ -1,8 +1,8 @@
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
-import PocketBase from 'pocketbase';
 import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { pb } from '../utils/pocketbase';
 
 interface ILoginFormInputs {
   email: string;
@@ -19,7 +19,6 @@ function Login() {
   } = useForm<ILoginFormInputs>();
 
   const onSubmit = async (data: ILoginFormInputs) => {
-    const pb = new PocketBase('http://127.0.0.1:8090');
 
     try {
       await pb.collection('users').authWithPassword(data.email, data.password);

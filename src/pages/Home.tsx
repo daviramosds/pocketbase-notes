@@ -1,7 +1,5 @@
-import PocketBase from 'pocketbase';
 import { useEffect, useState } from 'react';
-
-const pb = new PocketBase('http://127.0.0.1:8090');
+import { pb } from '../utils/pocketbase';
 
 function Home() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
