@@ -1,60 +1,55 @@
-import { useEffect, useState } from 'react';
+// src/components/Header.tsx
 import { FiLogOut } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
-import type { UsersResponse } from '../pb_types';
 import { pb } from '../utils/pocketbase';
+import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa';
 
-function Header() {
-  const [user, setUser] = useState<UsersResponse | null>(null);
+interface IHeaderProps {
+  avatarUrl: string | null;
+  toggleSidebar: () => void;
+  isSidebarOpen: boolean;
+}
+
+function Header({ avatarUrl, toggleSidebar, isSidebarOpen }: IHeaderProps) {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (pb.authStore.isValid && pb.authStore.record) {
-      setUser(pb.authStore.record as UsersResponse);
-      console.log(pb.authStore.record);
-    }
-  }, []);
-
-  if (!pb.authStore.isValid || !user) {
-    return (<></>)
-  }
-
-  const avatarUrl = user.avatar ? pb.files.getURL(user, user.avatar) : null;
-
   const handleLogout = () => {
-    pb.authStore.clear()
-    navigate('/login')
-  }
+    pb.authStore.clear();
+    navigate('/login');
+  };
 
   return (
+    <header className='w-full h-16 flex items-center justify-between px-4 py-12 z-30 absolute top-0'>
+      <button
+        onClick={toggleSidebar}
+        className="cursor-pointer text-gray-700 hover:text-blue-500 bg-white rounded h-16 w-16 flex items-center justify-center"
+        title="Abrir/Fechar Navegação"
+      >
+        {isSidebarOpen ? (
+          <FaAngleDoubleLeft className="text-2xl" />
+        ) : (
+          <FaAngleDoubleRight className="h-16 px-" />
+        )}
+      </button>
 
-    <header className='bg-white w-full h-16 absolute top-0 flex items-center justify-between p-4'>
-
-      <div>item</div>
-
-      <div className='flex gap-2'>
-
+      <div className='flex gap-3 items-center bg-white rounded h-16 px-4'>
         <Link to={'/profile'}>
           <img
-            src={avatarUrl || 'https://via.placeholder.com/40/aaa'} // Added a simple placeholder color
+            src={avatarUrl || 'https://via.placeholder.com/40/aaa'}
             alt="Profile Avatar"
             className="w-10 h-10 rounded-full border-2 border-gray-300 cursor-pointer object-cover"
           />
-
         </Link>
 
         <button
           onClick={handleLogout}
-          className="p-2 cursor-pointer"
+          className="p-2 cursor-pointer text-gray-700 hover:text-blue-600"
           title="Sair"
         >
-          <FiLogOut className="text-xl hover:text-blue-600" />
+          <FiLogOut className="text-xl" />
         </button>
       </div>
-
-
     </header>
-
   );
 }
 
