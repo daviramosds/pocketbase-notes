@@ -13,6 +13,7 @@ dist-ssr
 *.local
 pocketbase
 *lock*
+.env
 
 # Editor directories and files
 .vscode/*
